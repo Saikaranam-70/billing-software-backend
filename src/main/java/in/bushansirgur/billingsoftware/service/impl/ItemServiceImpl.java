@@ -31,16 +31,17 @@ public class ItemServiceImpl implements ItemService {
     private final FileUploadService fileUploadService;
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
+    private final CloudinaryService cloudinaryService;
 
     @Override
     public ItemResponse add(ItemRequest request, MultipartFile file) throws IOException {
-        //String imgUrl = fileUploadService.uploadFile(file);
-        String fileName = UUID.randomUUID().toString()+"."+ StringUtils.getFilenameExtension(file.getOriginalFilename());
-        Path uploadPath = Paths.get("uploads").toAbsolutePath().normalize();
-        Files.createDirectories(uploadPath);
-        Path targetLocation = uploadPath.resolve(fileName);
-        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-        String imgUrl = "https://optimistic-creativity-production-0650.up.railway.app/api/v1.0/uploads/"+fileName;
+        String imgUrl = cloudinaryService.uploadFile(file);
+//        String fileName = UUID.randomUUID().toString()+"."+ StringUtils.getFilenameExtension(file.getOriginalFilename());
+//        Path uploadPath = Paths.get("uploads").toAbsolutePath().normalize();
+//        Files.createDirectories(uploadPath);
+//        Path targetLocation = uploadPath.resolve(fileName);
+//        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+//        String imgUrl = "https://optimistic-creativity-production-0650.up.railway.app/api/v1.0/uploads/"+fileName;
         ItemEntity newItem = convertToEntity(request);
         CategoryEntity existingCategory = categoryRepository.findByCategoryId(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found: "+request.getCategoryId()));
@@ -86,15 +87,21 @@ public class ItemServiceImpl implements ItemService {
         ItemEntity existingItem = itemRepository.findByItemId(itemId)
                 .orElseThrow(() -> new RuntimeException("Item not found: "+itemId));
         //boolean isFileDelete = fileUploadService.deleteFile(existingItem.getImgUrl());
-        String imgUrl = existingItem.getImgUrl();
-        String fileName = imgUrl.substring(imgUrl.lastIndexOf("/")+1);
-        Path uploadPath = Paths.get("uploads").toAbsolutePath().normalize();
-        Path filePath = uploadPath.resolve(fileName);
-        try {
-            Files.deleteIfExists(filePath);
+//        String imgUrl = existingItem.getImgUrl();
+//        String fileName = imgUrl.substring(imgUrl.lastIndexOf("/")+1);
+//        Path uploadPath = Paths.get("uploads").toAbsolutePath().normalize();
+//        Path filePath = uploadPath.resolve(fileName);
+//        try {
+//            Files.deleteIfExists(filePath);
+//            itemRepository.delete(existingItem);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to delete the image");
+//        }
+        try{
+            cloudinaryService.deleteFile(existingItem.getImgUrl());
             itemRepository.delete(existingItem);
-        } catch (IOException e) {
-            e.printStackTrace();
+        }catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to delete the image");
         }
     }
