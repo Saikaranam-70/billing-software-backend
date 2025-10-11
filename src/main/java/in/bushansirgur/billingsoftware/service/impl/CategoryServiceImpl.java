@@ -8,9 +8,11 @@ import in.bushansirgur.billingsoftware.repository.ItemRepository;
 import in.bushansirgur.billingsoftware.service.CategoryService;
 import in.bushansirgur.billingsoftware.service.FileUploadService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
@@ -29,15 +31,17 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final FileUploadService fileUploadService;
     private final ItemRepository itemRepository;
+    private final CloudinaryService cloudinaryService;
+
 
     public CategoryResponse add(CategoryRequest request, MultipartFile file) throws IOException {
-        //String imgUrl = fileUploadService.uploadFile(file);
-        String fileName = UUID.randomUUID().toString()+"."+StringUtils.getFilenameExtension(file.getOriginalFilename());
-        Path uploadPath = Paths.get("uploads").toAbsolutePath().normalize();
-        Files.createDirectories(uploadPath);
-        Path targetLocation = uploadPath.resolve(fileName);
-        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-        String imgUrl = "https://optimistic-creativity-production-0650.up.railway.app/api/v1.0/uploads/"+fileName;
+        String imgUrl = cloudinaryService.uploadFile(file);
+//        String fileName = UUID.randomUUID().toString()+"."+StringUtils.getFilenameExtension(file.getOriginalFilename());
+//        Path uploadPath = Paths.get("uploads").toAbsolutePath().normalize();
+//        Files.createDirectories(uploadPath);
+//        Path targetLocation = uploadPath.resolve(fileName);
+//        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+//        String imgUrl = "https://optimistic-creativity-production-0650.up.railway.app/api/v1.0/uploads/"+fileName;
         CategoryEntity newCategory = convertToEntity(request);
         newCategory.setImgUrl(imgUrl);
         newCategory = categoryRepository.save(newCategory);
@@ -57,14 +61,19 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryEntity existingCategory = categoryRepository.findByCategoryId(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found: "+categoryId));
         //fileUploadService.deleteFile(existingCategory.getImgUrl());
-        String imgUrl = existingCategory.getImgUrl();
-        String fileName = imgUrl.substring(imgUrl.lastIndexOf("/")+1);
-        Path uploadPath = Paths.get("uploads").toAbsolutePath().normalize();
-        Path filePath = uploadPath.resolve(fileName);
-        try {
-            Files.deleteIfExists(filePath);
-        } catch (IOException e) {
-            e.printStackTrace();
+//        String imgUrl = existingCategory.getImgUrl();
+//        String fileName = imgUrl.substring(imgUrl.lastIndexOf("/")+1);
+//        Path uploadPath = Paths.get("uploads").toAbsolutePath().normalize();
+//        Path filePath = uploadPath.resolve(fileName);
+//        try {
+//            Files.deleteIfExists(filePath);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        try{
+            cloudinaryService.deleteFile(existingCategory.getImgUrl());
+        }catch (IOException e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to delete the image");
         }
         categoryRepository.delete(existingCategory);
     }
