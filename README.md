@@ -80,7 +80,7 @@ graph TB
 </p>
 
 <p align="center">
-  <img src=https://github.com/Saikaranam-70/billingSoftware/blob/main/src/assets/demo/3.png" width="45%" />
+  <img src="https://github.com/Saikaranam-70/billingSoftware/blob/main/src/assets/demo/3.png" width="45%" />
   <img src="https://github.com/Saikaranam-70/billingSoftware/blob/main/src/assets/demo/8.png" width="45%" />
 </p>
 
