@@ -75,18 +75,18 @@ graph TB
 ## 🎥 Demo Preview
 
 <p align="center">
-  <img src="./src/assets/demo/1.png" width="45%" />
-  <img src="./src/assets/demo/2.png" width="45%" />
+  <img src="https://github.com/Saikaranam-70/billingSoftware/blob/main/src/assets/demo/1.png" width="45%" />
+  <img src="https://github.com/Saikaranam-70/billingSoftware/blob/main/src/assets/demo/2.png" width="45%" />
 </p>
 
 <p align="center">
-  <img src="./src/assets/demo/3.png" width="45%" />
-  <img src="./src/assets/demo/4.png" width="45%" />
+  <img src=https://github.com/Saikaranam-70/billingSoftware/blob/main/src/assets/demo/3.png" width="45%" />
+  <img src="https://github.com/Saikaranam-70/billingSoftware/blob/main/src/assets/demo/8.png" width="45%" />
 </p>
 
 <p align="center">
-  <img src="./src/assets/demo/5.png" width="45%" />
-  <img src="./src/assets/demo/6.png" width="45%" />
+  <img src="https://github.com/Saikaranam-70/billingSoftware/blob/main/src/assets/demo/5.png" width="45%" />
+  <img src="https://github.com/Saikaranam-70/billingSoftware/blob/main/src/assets/demo/6.png" width="45%" />
 </p>
 
 ---
